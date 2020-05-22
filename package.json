@@ -1,0 +1,38 @@
+{
+  "name": "www-board-game",
+  "version": "0.0.1",
+  "description": "A small board game companion for Words With fWiends",
+  "main": "server.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack && node server.js"
+  },
+  "dependencies": {
+    "@babel/preset-react": "^7.9.4",
+    "antd": "^4.2.4",
+    "css-loader": "^3.5.3",
+    "express": "^4.16.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "sillyname": "^0.1.0",
+    "socket.io": "^2.3.0",
+    "style-loader": "^1.2.1",
+    "use-socketio": "^2.0.1"
+  },
+  "engines": {
+    "node": "8.x"
+  },
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "glitch",
+    "express"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "babel-loader": "^8.1.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  }
+}
