@@ -6,6 +6,12 @@ import generateName from 'sillyname';
 const { Title } = Typography;
 const { TextArea } = Input;
 
+function precisionRoundMod(number, precision) {
+  var factor = Math.pow(10, precision);
+  var n = precision < 0 ? number : 0.01 / factor + number;
+  return Math.round( n * factor) / factor;
+}
+
 const App = function() {
   const socket = React.useContext(SocketIOContext);
   const [name, setName] = React.useState(generateName());
@@ -83,6 +89,9 @@ const App = function() {
   function onStopStopwatch(e) {
     socket.emit('stop_stopwatch')
   }
+  function onHideStopwatch(e) {
+    socket.emit('hide_stopwatch')
+  }
   function onGlobalBoardChange(e) {
     setGlobalBoard(e.target.value)
     socket.emit('global_board', e.target.value)
@@ -103,8 +112,9 @@ const App = function() {
       <Button type="primary" onClick={onRollDice}>Roll Dice</Button>
       <Button type="primary" onClick={onRevealAnswer}>Reveal Answer</Button>
       {!timer && (<Button type="primary" onClick={onTimerClick}>Start Timer</Button>)}
-      {!timer && (<Button type="primary" onClick={onStartStopwatch}>Start Stopwatch</Button>)}
-      {!timer && (<Button type="primary" onClick={onStopStopwatch}>Stop Stopwatch</Button>)}
+      {!stopwatch && (<Button type="primary" onClick={onStartStopwatch}>Start Stopwatch</Button>)}
+      {stopwatch && (<Button type="primary" onClick={onStopStopwatch}>Stop Stopwatch</Button>)}
+      {stopwatch && (<Button type="primary" onClick={onHideStopwatch}>Clear Stopwatch</Button>)}
       <div></div>
       <Button type="primary" onClick={onRevealA}>Draw 🌎</Button>
       <Button type="primary" onClick={onRevealB}>Draw 🧠</Button>
@@ -121,7 +131,7 @@ const App = function() {
       {gameDescription && (<Title level={3} style={{whiteSpace: "pre", fontFamily: 'courier'}}>{gameDescription}</Title>)}
       {gameAnswer && gameShowAnswer && (<Title level={3}>{gameAnswer}</Title>)}
       {timer && (<Title level={4}>Timer: {timer}</Title>)}
-      {stopwatch != null && (<Title level={4}>Stopwatch: {stopwatch}</Title>)}
+      {stopwatch != null && (<Title level={4}>Stopwatch: {precisionRoundMod(stopwatch, 1)}</Title>)}
       <Title level={4}>Leaderboard</Title>
       <TextArea value={globalBoard} onChange={onGlobalBoardChange} autoSize style={{fontFamily: 'courier'}}/>
       <Title level={4}>Player Boards</Title>

@@ -128,12 +128,16 @@ io.on('connection', (socket) => {
   socket.on('start_stopwatch', (data) => {
     globalState.stopwatch = 0;
     stopwatchInterval = setInterval(function(){
-      globalState.stopwatch++
+      globalState.stopwatch += 0.1
       sendState(socket);
-    }, 1000);
+    }, 100);
     sendState(socket);
   });
   socket.on('stop_stopwatch', (data) => {
+    clearInterval(stopwatchInterval);
+    sendState(socket);
+  });
+  socket.on('hide_stopwatch', (data) => {
     globalState.stopwatch = null;
     clearInterval(stopwatchInterval);
     sendState(socket);
