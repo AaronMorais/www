@@ -60,6 +60,12 @@ const deck = {
   b_cards: shuffle(parse(fs.readFileSync('./cards/trivia.csv'), {columns: true})),
   c_cards: shuffle(parse(fs.readFileSync('./cards/nagaram.csv'), {columns: true})),
   d_cards: shuffle(parse(fs.readFileSync('./cards/rhyme_time.csv'), {columns: true})),
+  e_cards: shuffle(parse(fs.readFileSync('./cards/tongue_twisters.csv'), {columns: true})),
+  aa_cards: shuffle(parse(fs.readFileSync('./cards/both_worlds.csv'), {columns: true})),
+  bb_cards: shuffle(parse(fs.readFileSync('./cards/trivia2.csv'), {columns: true})),
+  cc_cards: shuffle(parse(fs.readFileSync('./cards/onyms.csv'), {columns: true})),
+  dd_cards: shuffle(parse(fs.readFileSync('./cards/vroom_vroom.csv'), {columns: true})),
+  ee_cards: shuffle(parse(fs.readFileSync('./cards/hive_ale_ding_leash.csv'), {columns: true})),
 }
 
 const globalState = {
@@ -120,6 +126,7 @@ io.on('connection', (socket) => {
     globalState.dice_roll = randomPossibility;
     globalState.game_title = null;
     globalState.game_description = null;
+    globalState.answer = null
     sendState(socket);
   });
   socket.on('reveal_a', (data) => {
@@ -141,12 +148,56 @@ io.on('connection', (socket) => {
     const card = deck.c_cards.pop();
     globalState.game_title = "NAGARAM";
     globalState.game_description = card.board;
+    globalState.answer = null
     sendState(socket);
   });
   socket.on('reveal_d', (data) => {
     const card = deck.d_cards.pop();
     globalState.game_title = "RHYME TIME";
     globalState.game_description = card.rhyme;
+    globalState.answer = null
+    sendState(socket);
+  });
+  socket.on('reveal_e', (data) => {
+    const card = deck.e_cards.pop();
+    globalState.game_title = "TONGUE TWISTER";
+    globalState.game_description = card.twister;
+    globalState.answer = null
+    sendState(socket);
+  });
+  socket.on('reveal_aa', (data) => {
+    const card = deck.aa_cards.pop();
+    globalState.game_title = card.language + ": " + card.native;
+    globalState.game_description = card.translation;
+    globalState.game_answer = card.answer
+    sendState(socket);
+  });
+  socket.on('reveal_bb', (data) => {
+    const card = deck.bb_cards.pop();
+    globalState.game_title = card.question;
+    globalState.game_description = null
+    globalState.answer = card.answer + " | " + card.explanation
+    sendState(socket);
+  });
+  socket.on('reveal_cc', (data) => {
+    const card = deck.cc_cards.pop();
+    globalState.game_title = card.wordtype + ": " + card.definition;
+    globalState.game_description = card.challenge + "; e.g. " + card.example;
+    globalState.answer = null
+    sendState(socket);
+  });
+  socket.on('reveal_dd', (data) => {
+    const card = deck.dd_cards.pop();
+    globalState.game_title = card.native;
+    globalState.game_description = "(" + card.language + ")";
+    globalState.answer = card.answer
+    sendState(socket);
+  });
+  socket.on('reveal_ee', (data) => {
+    const card = deck.ee_cards.pop();
+    globalState.game_title = card.phrase;
+    globalState.game_description = null;
+    globalState.answer = card.answer
     sendState(socket);
   });
 });

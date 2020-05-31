@@ -47,6 +47,24 @@ const App = function() {
   function onRevealD(e) {
     socket.emit('reveal_d')
   }
+  function onRevealE(e) {
+    socket.emit('reveal_e')
+  }
+  function onRevealAA(e) {
+    socket.emit('reveal_aa')
+  }
+  function onRevealBB(e) {
+    socket.emit('reveal_bb')
+  }
+  function onRevealCC(e) {
+    socket.emit('reveal_cc')
+  }
+  function onRevealDD(e) {
+    socket.emit('reveal_dd')
+  }
+  function onRevealEE(e) {
+    socket.emit('reveal_ee')
+  }
   function onTimerClick(e) {
     socket.emit('start_timer')
   }
@@ -72,10 +90,16 @@ const App = function() {
       {!timer && (<Button type="primary" onClick={onTimerClick}>Start Timer</Button>)}
       {timer && (<Title level={4}>Timer: {timer}</Title>)}
       <Button type="primary" onClick={onRollDice}>Roll Dice</Button>
-      <Button type="primary" onClick={onRevealA}>Draw A</Button>
-      <Button type="primary" onClick={onRevealB}>Draw B</Button>
-      <Button type="primary" onClick={onRevealC}>Draw C</Button>
-      <Button type="primary" onClick={onRevealD}>Draw D</Button>
+      <Button type="primary" onClick={onRevealA}>Draw 🌎</Button>
+      <Button type="primary" onClick={onRevealB}>Draw 🧠</Button>
+      <Button type="primary" onClick={onRevealC}>Draw ✏️</Button>
+      <Button type="primary" onClick={onRevealD}>Draw 👂</Button>
+      <Button type="primary" onClick={onRevealE}>Draw 🗣️</Button>
+      <Button type="primary" onClick={onRevealAA}>Draw 🌎🌎</Button>
+      <Button type="primary" onClick={onRevealBB}>Draw 🧠🧠</Button>
+      <Button type="primary" onClick={onRevealCC}>Draw ✏️✏️</Button>
+      <Button type="primary" onClick={onRevealDD}>Draw 👂👂</Button>
+      <Button type="primary" onClick={onRevealEE}>Draw 🗣️🗣️</Button>
       <Title level={4}>Leaderboard</Title>
       <TextArea value={globalBoard} onChange={onGlobalBoardChange} autoSize style={{fontFamily: 'courier'}}/>
       <Title level={4}>Player Boards</Title>
