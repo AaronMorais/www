@@ -50,79 +50,16 @@ function shuffle(a) {
   }
   return a;
 }
+
+const neatCsv = require('neat-csv');
+const parse = require('csv-parse/lib/sync')
+const fs = require('fs')
+
 const deck = {
-  a_cards: shuffle([
-    {
-      title: 'Title of a thing 1a',
-      description: 'Description of a thing 1a',
-    }, 
-    {
-      title: 'Title of a thing 2a',
-      description: 'Description of a thing 2a',
-    }, 
-    {
-      title: 'Title of a thing 3a',
-      description: 'Description of a thing 3a',
-    }, 
-    {
-      title: 'Title of a thing 4a',
-      description: 'Description of a thing 4a',
-    }, 
-  ]),
-  b_cards: shuffle([
-    {
-      title: 'Title of a thing 1b',
-      description: 'Description of a thing 1b',
-    }, 
-    {
-      title: 'Title of a thing 2b',
-      description: 'Description of a thing 2b',
-    }, 
-    {
-      title: 'Title of a thing 3b',
-      description: 'Description of a thing 3b',
-    }, 
-    {
-      title: 'Title of a thing 4b',
-      description: 'Description of a thing 4b',
-    }, 
-  ]),
-  c_cards: shuffle([
-    {
-      title: 'Title of a thing 1c',
-      description: 'Description of a thing 1c',
-    }, 
-    {
-      title: 'Title of a thing 2c',
-      description: 'Description of a thing 2c',
-    }, 
-    {
-      title: 'Title of a thing 3c',
-      description: 'Description of a thing 3c',
-    }, 
-    {
-      title: 'Title of a thing 4c',
-      description: 'Description of a thing 4c',
-    }, 
-  ]),
-  d_cards: shuffle([
-    {
-      title: 'Title of a thing 1d',
-      description: 'Description of a thing 1d',
-    }, 
-    {
-      title: 'Title of a thing 2d',
-      description: 'Description of a thing 2d',
-    }, 
-    {
-      title: 'Title of a thing 3d',
-      description: 'Description of a thing 3d',
-    }, 
-    {
-      title: 'Title of a thing 4d',
-      description: 'Description of a thing 4d',
-    }, 
-  ]),
+  a_cards: shuffle(parse(fs.readFileSync('./cards/loanwords.csv'), {columns: true})),
+  b_cards: shuffle(parse(fs.readFileSync('./cards/trivia.csv'), {columns: true})),
+  c_cards: shuffle(parse(fs.readFileSync('./cards/nagaram.csv'), {columns: true})),
+  d_cards: shuffle(parse(fs.readFileSync('./cards/rhyme_time.csv'), {columns: true})),
 }
 
 const globalState = {
@@ -140,6 +77,7 @@ const globalState = {
   dice_roll: null,
   game_title: null,
   game_description: null,
+  game_answer: null,
 }
 
 function sendState(socket) {
@@ -186,26 +124,29 @@ io.on('connection', (socket) => {
   });
   socket.on('reveal_a', (data) => {
     const card = deck.a_cards.pop();
-    globalState.game_title = card.title;
-    globalState.game_description = card.description;
+    globalState.game_title = card.language;
+    globalState.game_description = card.loanword;
+    globalState.game_answer = card.answer
     sendState(socket);
   });
   socket.on('reveal_b', (data) => {
     const card = deck.b_cards.pop();
-    globalState.game_title = card.title;
-    globalState.game_description = card.description;
+    globalState.game_title = card.question;
+    globalState.game_description = "A) " + card.a + " B) " + card.b
+    if (card.c != "") {globalState.game_description += " C) " + card.c;}
+    globalState.answer = card.answer + " | " + card.explanation
     sendState(socket);
   });
   socket.on('reveal_c', (data) => {
     const card = deck.c_cards.pop();
-    globalState.game_title = card.title;
-    globalState.game_description = card.description;
+    globalState.game_title = "NAGARAM";
+    globalState.game_description = card.board;
     sendState(socket);
   });
   socket.on('reveal_d', (data) => {
     const card = deck.d_cards.pop();
-    globalState.game_title = card.title;
-    globalState.game_description = card.description;
+    globalState.game_title = "RHYME TIME";
+    globalState.game_description = card.rhyme;
     sendState(socket);
   });
 });
