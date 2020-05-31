@@ -73,6 +73,7 @@ const deck = {
 
 const globalState = {
   timer: null,
+  stopwatch: null,
   global_board: `
   +--------+---+---+---+---+
   |        | A | B | C | D |
@@ -88,6 +89,7 @@ const globalState = {
   game_description: null,
   game_answer: null,
 }
+let stopwatchInterval;
 
 function sendState(socket) {
   socket.emit('state', globalState);
@@ -121,6 +123,19 @@ io.on('connection', (socket) => {
       }
       sendState(socket);
     }, 1000);
+    sendState(socket);
+  });
+  socket.on('start_stopwatch', (data) => {
+    globalState.stopwatch = 0;
+    stopwatchInterval = setInterval(function(){
+      globalState.stopwatch++
+      sendState(socket);
+    }, 1000);
+    sendState(socket);
+  });
+  socket.on('stop_stopwatch', (data) => {
+    globalState.stopwatch = null;
+    clearInterval(stopwatchInterval);
     sendState(socket);
   });
 

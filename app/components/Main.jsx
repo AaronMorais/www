@@ -10,6 +10,7 @@ const App = function() {
   const socket = React.useContext(SocketIOContext);
   const [name, setName] = React.useState(generateName());
   const [timer, setTimer] = React.useState(null);
+  const [stopwatch, setStopwatch] = React.useState(null);
   const [globalBoard, setGlobalBoard] = React.useState('');
   const [personalBoards, setPersonalBoards] = React.useState(null);
   const [myBoard, setMyBoard] = React.useState('Hi friends!');
@@ -26,6 +27,7 @@ const App = function() {
 
     socket.on('state', (data) => {
       setTimer(data.timer);
+      setStopwatch(data.stopwatch);
       setGlobalBoard(data.global_board);
       setPersonalBoards(data.personal_boards);
       setDiceRoll(data.dice_roll);
@@ -34,7 +36,7 @@ const App = function() {
       setGameAnswer(data.game_answer);
       setGameShowAnswer(data.game_show_answer);
     });
-  }, [globalBoard, personalBoards, timer]);
+  }, [globalBoard, personalBoards, timer, stopwatch]);
 
   function onRollDice(e) {
     socket.emit('roll_dice')
@@ -75,6 +77,12 @@ const App = function() {
   function onTimerClick(e) {
     socket.emit('start_timer')
   }
+  function onStartStopwatch(e) {
+    socket.emit('start_stopwatch')
+  }
+  function onStopStopwatch(e) {
+    socket.emit('stop_stopwatch')
+  }
   function onGlobalBoardChange(e) {
     setGlobalBoard(e.target.value)
     socket.emit('global_board', e.target.value)
@@ -95,6 +103,8 @@ const App = function() {
       <Button type="primary" onClick={onRollDice}>Roll Dice</Button>
       <Button type="primary" onClick={onRevealAnswer}>Reveal Answer</Button>
       {!timer && (<Button type="primary" onClick={onTimerClick}>Start Timer</Button>)}
+      {!timer && (<Button type="primary" onClick={onStartStopwatch}>Start Stopwatch</Button>)}
+      {!timer && (<Button type="primary" onClick={onStopStopwatch}>Stop Stopwatch</Button>)}
       <div></div>
       <Button type="primary" onClick={onRevealA}>Draw 🌎</Button>
       <Button type="primary" onClick={onRevealB}>Draw 🧠</Button>
@@ -111,6 +121,7 @@ const App = function() {
       {gameDescription && (<Title level={3} style={{whiteSpace: "pre", fontFamily: 'courier'}}>{gameDescription}</Title>)}
       {gameAnswer && gameShowAnswer && (<Title level={3}>{gameAnswer}</Title>)}
       {timer && (<Title level={4}>Timer: {timer}</Title>)}
+      {stopwatch != null && (<Title level={4}>Stopwatch: {stopwatch}</Title>)}
       <Title level={4}>Leaderboard</Title>
       <TextArea value={globalBoard} onChange={onGlobalBoardChange} autoSize style={{fontFamily: 'courier'}}/>
       <Title level={4}>Player Boards</Title>
