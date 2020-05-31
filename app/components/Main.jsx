@@ -89,7 +89,7 @@ const App = function() {
   }
   
   return (
-    <>
+    <div style={{margin: 10}}>
       <Title>Words With fWiends</Title>
       {diceRoll && (<Title level={3}>{diceRoll}</Title>)}
       <Button type="primary" onClick={onRollDice}>Roll Dice</Button>
@@ -108,7 +108,7 @@ const App = function() {
       <Button type="primary" onClick={onRevealDD}>Draw 👂👂</Button>
       <Button type="primary" onClick={onRevealEE}>Draw 🗣️🗣️</Button>
       {gameTitle && (<Title level={3}>{gameTitle}</Title>)}
-      {gameDescription && (<Title level={3}>{gameDescription}</Title>)}
+      {gameDescription && (<Title level={3} style={{whiteSpace: "pre", fontFamily: 'courier'}}>{gameDescription}</Title>)}
       {gameAnswer && gameShowAnswer && (<Title level={3}>{gameAnswer}</Title>)}
       {timer && (<Title level={4}>Timer: {timer}</Title>)}
       <Title level={4}>Leaderboard</Title>
@@ -127,7 +127,7 @@ const App = function() {
       <TextArea value={myBoard} onChange={onMyBoardChange} autoSize style={{fontFamily: 'courier'}}/>
       <Title level={4}>Your Name</Title>
       <TextArea value={name} onChange={onNameChange} autoSize style={{fontFamily: 'courier'}}/>
-    </>
+    </div>
   );
 }
 
