@@ -51,21 +51,24 @@ function shuffle(a) {
   return a;
 }
 
-const neatCsv = require('neat-csv');
-const parse = require('csv-parse/lib/sync')
-const fs = require('fs')
+
+function shuffle_deck(filepath) {
+  const parse = require('csv-parse/lib/sync')
+  const fs = require('fs')
+  return shuffle(parse(fs.readFileSync(filepath), {columns: true}))
+}
 
 const deck = {
-  a_cards: shuffle(parse(fs.readFileSync('./cards/loanwords.csv'), {columns: true})),
-  b_cards: shuffle(parse(fs.readFileSync('./cards/trivia.csv'), {columns: true})),
-  c_cards: shuffle(parse(fs.readFileSync('./cards/nagaram.csv'), {columns: true})),
-  d_cards: shuffle(parse(fs.readFileSync('./cards/rhyme_time.csv'), {columns: true})),
-  e_cards: shuffle(parse(fs.readFileSync('./cards/tongue_twisters.csv'), {columns: true})),
-  aa_cards: shuffle(parse(fs.readFileSync('./cards/both_worlds.csv'), {columns: true})),
-  bb_cards: shuffle(parse(fs.readFileSync('./cards/trivia2.csv'), {columns: true})),
-  cc_cards: shuffle(parse(fs.readFileSync('./cards/onyms.csv'), {columns: true})),
-  dd_cards: shuffle(parse(fs.readFileSync('./cards/vroom_vroom.csv'), {columns: true})),
-  ee_cards: shuffle(parse(fs.readFileSync('./cards/hive_ale_ding_leash.csv'), {columns: true})),
+  a_cards: shuffle_deck('./cards/loanwords.csv'),
+  b_cards: shuffle_deck('./cards/trivia.csv'),
+  c_cards: shuffle_deck('./cards/nagaram.csv'),
+  d_cards: shuffle_deck('./cards/rhyme_time.csv'),
+  e_cards: shuffle_deck('./cards/tongue_twisters.csv'),
+  aa_cards: shuffle_deck('./cards/both_worlds.csv'),
+  bb_cards: shuffle_deck('./cards/trivia2.csv'),
+  cc_cards: shuffle_deck('./cards/onyms.csv'),
+  dd_cards: shuffle_deck('./cards/vroom_vroom.csv'),
+  ee_cards: shuffle_deck('./cards/hive_ale_ding_leash.csv'),
 }
 
 const globalState = {
@@ -126,7 +129,12 @@ io.on('connection', (socket) => {
     globalState.dice_roll = randomPossibility;
     globalState.game_title = null;
     globalState.game_description = null;
-    globalState.answer = null
+    globalState.game_answer = null
+    globalState.game_show_answer = false
+    sendState(socket);
+  });
+  socket.on('reveal_answer', (data) => {
+    globalState.game_show_answer = true
     sendState(socket);
   });
   socket.on('reveal_a', (data) => {
@@ -134,6 +142,7 @@ io.on('connection', (socket) => {
     globalState.game_title = card.language;
     globalState.game_description = card.loanword;
     globalState.game_answer = card.answer
+    globalState.game_show_answer = false
     sendState(socket);
   });
   socket.on('reveal_b', (data) => {
@@ -141,28 +150,32 @@ io.on('connection', (socket) => {
     globalState.game_title = card.question;
     globalState.game_description = "A) " + card.a + " B) " + card.b
     if (card.c != "") {globalState.game_description += " C) " + card.c;}
-    globalState.answer = card.answer + " | " + card.explanation
+    globalState.game_answer = card.answer + " | " + card.explanation
+    globalState.game_show_answer = false
     sendState(socket);
   });
   socket.on('reveal_c', (data) => {
     const card = deck.c_cards.pop();
     globalState.game_title = "NAGARAM";
     globalState.game_description = card.board;
-    globalState.answer = null
+    globalState.game_answer = null
+    globalState.game_show_answer = false
     sendState(socket);
   });
   socket.on('reveal_d', (data) => {
     const card = deck.d_cards.pop();
     globalState.game_title = "RHYME TIME";
     globalState.game_description = card.rhyme;
-    globalState.answer = null
+    globalState.game_answer = null
+    globalState.game_show_answer = false
     sendState(socket);
   });
   socket.on('reveal_e', (data) => {
     const card = deck.e_cards.pop();
     globalState.game_title = "TONGUE TWISTER";
     globalState.game_description = card.twister;
-    globalState.answer = null
+    globalState.game_answer = null
+    globalState.game_show_answer = false
     sendState(socket);
   });
   socket.on('reveal_aa', (data) => {
@@ -170,34 +183,39 @@ io.on('connection', (socket) => {
     globalState.game_title = card.language + ": " + card.native;
     globalState.game_description = card.translation;
     globalState.game_answer = card.answer
+    globalState.game_show_answer = false
     sendState(socket);
   });
   socket.on('reveal_bb', (data) => {
     const card = deck.bb_cards.pop();
     globalState.game_title = card.question;
     globalState.game_description = null
-    globalState.answer = card.answer + " | " + card.explanation
+    globalState.game_answer = card.answer
+    globalState.game_show_answer = false
     sendState(socket);
   });
   socket.on('reveal_cc', (data) => {
     const card = deck.cc_cards.pop();
     globalState.game_title = card.wordtype + ": " + card.definition;
     globalState.game_description = card.challenge + "; e.g. " + card.example;
-    globalState.answer = null
+    globalState.game_answer = null
+    globalState.game_show_answer = false
     sendState(socket);
   });
   socket.on('reveal_dd', (data) => {
     const card = deck.dd_cards.pop();
     globalState.game_title = card.native;
     globalState.game_description = "(" + card.language + ")";
-    globalState.answer = card.answer
+    globalState.game_answer = card.answer
+    globalState.game_show_answer = false
     sendState(socket);
   });
   socket.on('reveal_ee', (data) => {
     const card = deck.ee_cards.pop();
     globalState.game_title = card.phrase;
     globalState.game_description = null;
-    globalState.answer = card.answer
+    globalState.game_answer = card.answer
+    globalState.game_show_answer = false
     sendState(socket);
   });
 });
