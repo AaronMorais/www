@@ -200,7 +200,7 @@ io.on('connection', (socket) => {
   socket.on('reveal_aa', (data) => {
     const card = deck.aa_cards.pop();
     globalState.game_title =  card.translation;
-    globalState.game_description = "From " + card.language + ": " + card.native + ". What is the meaning?";
+    globalState.game_description = "From " + card.language + ": " + card.native + ".\nWhat is the meaning?";
     globalState.game_answer = card.answer;
     globalState.game_show_answer = false;
     sendState(socket);
@@ -216,7 +216,7 @@ io.on('connection', (socket) => {
   socket.on('reveal_cc', (data) => {
     const card = deck.cc_cards.pop();
     globalState.game_title = card.wordtype + ": " + card.definition;
-    globalState.game_description = card.challenge + "; e.g. " + card.example;
+    globalState.game_description = card.challenge + "\ne.g. " + card.example;
     globalState.game_answer = null;
     globalState.game_show_answer = false;
     sendState(socket);
@@ -224,7 +224,7 @@ io.on('connection', (socket) => {
   socket.on('reveal_dd', (data) => {
     const card = deck.dd_cards.pop();
     globalState.game_title = card.native;
-    globalState.game_description = "From " + card.language + ". What's that sound?";
+    globalState.game_description = "From " + card.language + ".\nWhat's that sound?";
     globalState.game_answer = card.answer;
     globalState.game_show_answer = false;
     sendState(socket);

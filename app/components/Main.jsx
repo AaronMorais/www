@@ -110,7 +110,6 @@ const App = function() {
       <Title>Words With fWiends</Title>
       {diceRoll && (<Title level={3}>{diceRoll}</Title>)}
       <Button type="primary" onClick={onRollDice}>Roll Dice</Button>
-      <Button type="primary" onClick={onRevealAnswer}>Reveal Answer</Button>
       {!timer && (<Button type="primary" onClick={onTimerClick}>Start Timer</Button>)}
       {!stopwatch && (<Button type="primary" onClick={onStartStopwatch}>Start Stopwatch</Button>)}
       {stopwatch && (<Button type="primary" onClick={onStopStopwatch}>Stop Stopwatch</Button>)}
@@ -129,9 +128,10 @@ const App = function() {
       <Button type="primary" onClick={onRevealEE}>Draw 🗣️🗣️</Button>
       {gameTitle && (<Title level={3}>{gameTitle}</Title>)}
       {gameDescription && (<Title level={3} style={{whiteSpace: "pre", fontFamily: 'courier'}}>{gameDescription}</Title>)}
-      {gameAnswer && gameShowAnswer && (<Title level={3}>{gameAnswer}</Title>)}
       {timer && (<Title level={4}>Timer: {timer}</Title>)}
       {stopwatch != null && (<Title level={4}>Stopwatch: {precisionRoundMod(stopwatch, 1)}</Title>)}
+      {gameAnswer && (<Button type="primary" onClick={onRevealAnswer}>Reveal Answer</Button>)}
+      {gameAnswer && gameShowAnswer && (<Title level={3}>{gameAnswer}</Title>)}
       <Title level={4}>Leaderboard</Title>
       <TextArea value={globalBoard} onChange={onGlobalBoardChange} autoSize style={{fontFamily: 'courier'}}/>
       <Title level={4}>Player Boards</Title>
