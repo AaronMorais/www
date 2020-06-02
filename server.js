@@ -19,26 +19,20 @@ var listener = server.listen(process.env.PORT, function () {
 
 var io = require('socket.io')(server);
 
-const dicePossibilities = [
-  '❤️ Solo',
-  '❤️ Head 2 Head',
-  '❤️ Free for all',
-  '🌎 Solo',
-  '🌎 Head 2 Head',
-  '🌎 Free for all',
-  '🧠 Solo',
-  '🧠 Head 2 Head',
-  '🧠 Free for all',
-  '✏️ Solo',
-  '✏️ Head 2 Head',
-  '✏️ Free for all',
-  '👂 Solo',
-  '👂 Head 2 Head',
-  '👂 Free for all',
-  '🗣️ Solo',
-  '🗣️ Head 2 Head',
-  '🗣️ Free for all',
+const diceGames = [
+  '❤️',
+  '🌎',
+  '🧠',
+  '✏️',
+  '👂',
+  '🗣️',
 ];
+
+const diceChallenges = [
+  'Solo',
+  'Head 2 Head',
+  'Free For All',
+]
 
 function shuffle(a) {
   var j, x, i;
@@ -84,7 +78,8 @@ const globalState = {
   +--------+---+---+---+---+
   `,
   personal_boards: {},
-  dice_roll: null,
+  dice_game: '❤️',
+  dice_challenge: null,
   game_title: null,
   game_description: null,
   game_answer: null,
@@ -117,7 +112,7 @@ io.on('connection', (socket) => {
     globalState.timer = 30;
     var timerInterval = setInterval(function(){
       globalState.timer--
-      if (globalState.timer === 0) {
+      if (globalState.timer <= 0) {
         globalState.timer = null;
         clearInterval(timerInterval);
       }
@@ -125,6 +120,9 @@ io.on('connection', (socket) => {
     }, 1000);
     sendState(socket);
   });
+  socket.on('stop_timer', (data) => {
+    globalState.timer = null;
+  })
   socket.on('start_stopwatch', (data) => {
     globalState.stopwatch = 0;
     stopwatchInterval = setInterval(function(){
@@ -144,8 +142,10 @@ io.on('connection', (socket) => {
   });
 
   socket.on('roll_dice', (data) => {
-    const randomPossibility = dicePossibilities[Math.floor(Math.random()*dicePossibilities.length)];
-    globalState.dice_roll = randomPossibility;
+    const rolledGame = diceGames[Math.floor(Math.random()*diceGames.length)];
+    const rolledChallenge = diceChallenges[Math.floor(Math.random()*diceChallenges.length)];
+    globalState.dice_game = rolledGame;
+    globalState.dice_challenge = rolledChallenge;
     globalState.game_title = null;
     globalState.game_description = null;
     globalState.game_answer = null;
@@ -200,7 +200,7 @@ io.on('connection', (socket) => {
   socket.on('reveal_aa', (data) => {
     const card = deck.aa_cards.pop();
     globalState.game_title =  card.translation;
-    globalState.game_description = "From " + card.language + ": " + card.native + ". What is the meaning?";
+    globalState.game_description = "From " + card.language + ": " + card.native + ".\nWhat is the meaning?";
     globalState.game_answer = card.answer;
     globalState.game_show_answer = false;
     sendState(socket);
@@ -216,7 +216,7 @@ io.on('connection', (socket) => {
   socket.on('reveal_cc', (data) => {
     const card = deck.cc_cards.pop();
     globalState.game_title = card.wordtype + ": " + card.definition;
-    globalState.game_description = card.challenge + "; e.g. " + card.example;
+    globalState.game_description = card.challenge + "\ne.g. " + card.example;
     globalState.game_answer = null;
     globalState.game_show_answer = false;
     sendState(socket);
@@ -224,7 +224,7 @@ io.on('connection', (socket) => {
   socket.on('reveal_dd', (data) => {
     const card = deck.dd_cards.pop();
     globalState.game_title = card.native;
-    globalState.game_description = "From " + card.language + ". What's that sound?";
+    globalState.game_description = "From " + card.language + ".\nWhat's that sound?";
     globalState.game_answer = card.answer;
     globalState.game_show_answer = false;
     sendState(socket);
