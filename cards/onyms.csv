@@ -3,13 +3,13 @@ Contronym,A word with opposite meanings,"""Dust"" can mean both to remove dust o
 Heteronym,Words that are spelt the exact same but have different meanings when pronounced differently,"""Lead"" when pronounced ""LEED"" means to guide, but when pronounced ""LED"" means a metalic element","List heteronyms, giving both pronounciations."
 Homonym,Words that are pronounced the same but have different meanings.,"""Sea"" vs ""See""",List pairs of homonyms. Provide spelling or meanings if requested by other players.
 Acronym,An abbreviation fromed with the initial letters of other words and pronounced as a word.,"""NASA"". (Note. ""CIA"" is not an acronym because it is read as ""C"" ""I"" ""A"" and not as ""cia"")",List acronyms
-Backronym,A constructed phrase that claims to be the source of an acronym. Try to make up some on the spot,"""Word"" could stand for ""Written orthography rearanged deliberately""",Invent some backronyms!
+Backronym,A constructed phrase that claims to be the source of an acronym.,"""Word"" could stand for ""Written orthography rearanged deliberately""",Invent some backronyms!
 Capitonym,Words that change its meaning depending on whether the first letter is capitalized,"""March"" meaning the month vs ""march"" meaning to walk in a military manner",List capitonyms. Provide the 2 meanings if requested by other players.
 Antonym,A word that is the opposite meaning of another word.,"""Happy"" and ""Sad""",List examples of a word and it's antonym
 Antonym,A word that is the opposite meaning of another word.,"""Happy"" and ""Sad""",List examples of a word and it's antonym
 Antonym,A word that is the opposite meaning of another word.,"""Happy"" and ""Sad""",List examples of a word and it's antonym
 Antonym,A word that is the opposite meaning of another word. ,"""Happy"" and ""Sad""",List examples of a word and it's antonym
-Retronym,A new name for something to differentiate it from the older/newer version,"""Acoustic Guitar""",List retronyms
+Retronym,A new name for something to differentiate it from the older/newer version,"""Acoustic Guitar"" used to just be ""Guitar""",List retronyms
 Synonym,A word with the same or similar meaning.,"""Big"" and ""Large""",List pairs of synonyms.
 Synonym,A word with the same or similar meaning.,"""Big"" and ""Large""",List pairs of synonyms.
 Synonym,A word with the same or similar meaning.,"""Big"" and ""Large""",List pairs of synonyms.
@@ -26,18 +26,18 @@ Simulfix,A change in a segment of a word to modify the meaning.,"""Mouse"" -> ""
 Suprafix,A change in stress pattern to modify the meaning of a word.,"""Produce"" (noun) vs ""Produce"" (verb)",List pairs of words where changing the stress changes the meaning
 Portmanteau,A word that is formed from parts of other words all of which relate to a single concept.,"""Motel"" = ""Motor"" + ""Hotel""",List portmanteaus
 Palindrome,A word or phrase where the order of letters are the same forward and backwards.,"""Redivider""",Name/create a palindromic word or phrase. Longestest palindrome wins.
-Pangram,A sentence that contains every letter in the alphabet.,"""The quick brown fox jumps over a lazy dog.""","Create a pangram that does not contain the words ""brown"" ""dog"" or ""fox"". Sentence with the fewest letters wins."
+Pangram,A sentence that contains every letter in the alphabet.,"""The quick brown fox jumps over a lazy dog.""","Create a pangram that does not contain the words ""brown"", ""dog"", or ""fox"". Sentence with the fewest letters wins."
 Lipogram,A sentence that omits a letter or group of letters.,"""A dog can't catch a ball."" omits the letter ""e""","Create a lipogram that omits the letter ""t"". Sentence with the most words wins."
 Lipogram,A sentence that omits a letter or group of letters.,"""A dog can't catch a ball."" omits the letter ""e""","Create a lipogram that omits the letter ""a"". Sentence with the most words wins."
 Lipogram,A sentence that omits a letter or group of letters.,"""A dog can't catch a ball."" omits the letter ""e""","Create a lipogram that omits the letter ""r"". Sentence with the most words wins."
 Lipogram,A sentence that omits a letter or group of letters.,"""A dog can't catch a ball."" omits the letter ""e""","Create a lipogram that omits the letter ""s"". Sentence with the most words wins."
-Reverse-lipogram,A sentence where each word must contain a particular letter.,"""The thieves have thirty hats"" has ""h"" in every word.","Create a reverse-lipogram for the letter ""p"". Sentence with most words wins."
-Reverse-lipogram,A sentence where each word must contain a particular letter.,"""The thieves have thirty hats"" has ""h"" in every word.","Create a reverse-lipogram for the letter ""e"". Sentence with most words wins."
-Reverse-lipogram,A sentence where each word must contain a particular letter.,"""The thieves have thirty hats"" has ""h"" in every word.","Create a reverse-lipogram for the letter ""o"". Sentence with most words wins."
-Reverse-lipogram,A sentence where each word must contain a particular letter.,"""The thieves have thirty hats"" has ""h"" in every word.","Create a reverse-lipogram for the letter ""n"". Sentence with most words wins."
-Tautogram,A sentence where every word starts with the same letter.,"""Andy ate an apple.""",Create a tautogram. Sentence with most words wins
-Tautogram,A sentence where every word starts with the same letter.,"""Andy ate an apple.""",Create a tautogram. Sentence with most words wins
-Tautogram,A sentence where every word starts with the same letter.,"""Andy ate an apple.""",Create a tautogram. Sentence with most words wins
+Reverse-lipogram,A sentence where each word must contain a particular letter.,"""The thieves have thirty hats"" has ""h"" in every word.","Create a reverse-lipogram for the letter ""p"". Sentence with the most words wins."
+Reverse-lipogram,A sentence where each word must contain a particular letter.,"""The thieves have thirty hats"" has ""h"" in every word.","Create a reverse-lipogram for the letter ""e"". Sentence with the most words wins."
+Reverse-lipogram,A sentence where each word must contain a particular letter.,"""The thieves have thirty hats"" has ""h"" in every word.","Create a reverse-lipogram for the letter ""o"". Sentence with the most words wins."
+Reverse-lipogram,A sentence where each word must contain a particular letter.,"""The thieves have thirty hats"" has ""h"" in every word.","Create a reverse-lipogram for the letter ""n"". Sentence with the most words wins."
+Tautogram,A sentence where every word starts with the same letter.,"""Andy ate an apple.""",Create a tautogram. Sentence with the most words wins
+Tautogram,A sentence where every word starts with the same letter.,"""Andy ate an apple.""",Create a tautogram. Sentence with the most words wins
+Tautogram,A sentence where every word starts with the same letter.,"""Andy ate an apple.""",Create a tautogram. Sentence with the most words wins
 Univocalic,A sentence that only contains a single vowel.,"""He needed me.""","Create a univocalic sentence for the letter ""a"". Sentence with the most words wins"
 Univocalic,A sentence that only contains a single vowel.,"""He needed me.""","Create a univocalic sentence for the letter ""i"". Sentence with the most words wins"
 Univocalic,A sentence that only contains a single vowel.,"""He needed me.""","Create a univocalic sentence for the letter ""o"". Sentence with the most words wins"
