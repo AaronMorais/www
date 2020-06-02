@@ -83,6 +83,9 @@ const App = function() {
   function onTimerClick(e) {
     socket.emit('start_timer')
   }
+  function onTimerStop(e) {
+    socket.emit('stop_timer')
+  }
   function onStartStopwatch(e) {
     socket.emit('start_stopwatch')
   }
@@ -111,6 +114,7 @@ const App = function() {
       {diceRoll && (<Title level={3}>{diceRoll}</Title>)}
       <Button type="primary" onClick={onRollDice}>Roll Dice</Button>
       {!timer && (<Button type="primary" onClick={onTimerClick}>Start Timer</Button>)}
+      {timer && (<Button type="primary" onClick={onTimerStop}>Stop Timer</Button>)}
       {!stopwatch && (<Button type="primary" onClick={onStartStopwatch}>Start Stopwatch</Button>)}
       {stopwatch && (<Button type="primary" onClick={onStopStopwatch}>Stop Stopwatch</Button>)}
       {stopwatch && (<Button type="primary" onClick={onHideStopwatch}>Clear Stopwatch</Button>)}

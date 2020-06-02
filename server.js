@@ -117,7 +117,7 @@ io.on('connection', (socket) => {
     globalState.timer = 30;
     var timerInterval = setInterval(function(){
       globalState.timer--
-      if (globalState.timer === 0) {
+      if (globalState.timer <= 0) {
         globalState.timer = null;
         clearInterval(timerInterval);
       }
@@ -125,6 +125,9 @@ io.on('connection', (socket) => {
     }, 1000);
     sendState(socket);
   });
+  socket.on('stop_timer', (data) => {
+    globalState.timer = null
+  })
   socket.on('start_stopwatch', (data) => {
     globalState.stopwatch = 0;
     stopwatchInterval = setInterval(function(){
