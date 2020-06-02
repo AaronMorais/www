@@ -20,7 +20,8 @@ const App = function() {
   const [globalBoard, setGlobalBoard] = React.useState('');
   const [personalBoards, setPersonalBoards] = React.useState(null);
   const [myBoard, setMyBoard] = React.useState('Hi friends!');
-  const [diceRoll, setDiceRoll] = React.useState(null);
+  const [diceGame, setDiceGame] = React.useState(null);
+  const [diceChallenge, setDiceChallenge] = React.useState(null);
   const [gameTitle, setGameTitle] = React.useState(null);
   const [gameDescription, setGameDescription] = React.useState(null);
   const [gameAnswer, setGameAnswer] = React.useState(null);
@@ -36,7 +37,8 @@ const App = function() {
       setStopwatch(data.stopwatch);
       setGlobalBoard(data.global_board);
       setPersonalBoards(data.personal_boards);
-      setDiceRoll(data.dice_roll);
+      setDiceGame(data.dice_game);
+      setDiceChallenge(data.dice_challenge);
       setGameTitle(data.game_title);
       setGameDescription(data.game_description);
       setGameAnswer(data.game_answer);
@@ -111,7 +113,7 @@ const App = function() {
   return (
     <div style={{margin: 10}}>
       <Title>Words With fWiends</Title>
-      {diceRoll && (<Title level={3}>{diceRoll}</Title>)}
+      {diceGame && diceChallenge && (<Title level={3}>{diceGame} {diceChallenge}</Title>)}
       <Button type="primary" onClick={onRollDice}>Roll Dice</Button>
       {!timer && (<Button type="primary" onClick={onTimerClick}>Start Timer</Button>)}
       {timer && (<Button type="primary" onClick={onTimerStop}>Stop Timer</Button>)}
@@ -119,17 +121,17 @@ const App = function() {
       {stopwatch && (<Button type="primary" onClick={onStopStopwatch}>Stop Stopwatch</Button>)}
       {stopwatch && (<Button type="primary" onClick={onHideStopwatch}>Clear Stopwatch</Button>)}
       <div></div>
-      <Button type="primary" onClick={onRevealA}>Draw 🌎</Button>
-      <Button type="primary" onClick={onRevealB}>Draw 🧠</Button>
-      <Button type="primary" onClick={onRevealC}>Draw ✏️</Button>
-      <Button type="primary" onClick={onRevealD}>Draw 👂</Button>
-      <Button type="primary" onClick={onRevealE}>Draw 🗣️</Button>
+      {['🌎', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealA}>Draw 🌎</Button>)}
+      {['🧠', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealB}>Draw 🧠</Button>)}
+      {['✏️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealC}>Draw ✏️</Button>)}
+      {['👂', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealD}>Draw 👂</Button>)}
+      {['🗣️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealE}>Draw 🗣️</Button>)}
       <div></div>
-      <Button type="primary" onClick={onRevealAA}>Draw 🌎🌎</Button>
-      <Button type="primary" onClick={onRevealBB}>Draw 🧠🧠</Button>
-      <Button type="primary" onClick={onRevealCC}>Draw ✏️✏️</Button>
-      <Button type="primary" onClick={onRevealDD}>Draw 👂👂</Button>
-      <Button type="primary" onClick={onRevealEE}>Draw 🗣️🗣️</Button>
+      {['🌎', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealAA}>Draw 🌎🌎</Button>)}
+      {['🧠', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealBB}>Draw 🧠🧠</Button>)}
+      {['✏️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealCC}>Draw ✏️✏️</Button>)}
+      {['👂', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealDD}>Draw 👂👂</Button>)}
+      {['🗣️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealEE}>Draw 🗣️🗣️</Button>)}
       {gameTitle && (<Title level={3}>{gameTitle}</Title>)}
       {gameDescription && (<Title level={3} style={{whiteSpace: "pre", fontFamily: 'courier'}}>{gameDescription}</Title>)}
       {timer && (<Title level={4}>Timer: {timer}</Title>)}

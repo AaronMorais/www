@@ -19,26 +19,20 @@ var listener = server.listen(process.env.PORT, function () {
 
 var io = require('socket.io')(server);
 
-const dicePossibilities = [
-  '❤️ Solo',
-  '❤️ Head 2 Head',
-  '❤️ Free for all',
-  '🌎 Solo',
-  '🌎 Head 2 Head',
-  '🌎 Free for all',
-  '🧠 Solo',
-  '🧠 Head 2 Head',
-  '🧠 Free for all',
-  '✏️ Solo',
-  '✏️ Head 2 Head',
-  '✏️ Free for all',
-  '👂 Solo',
-  '👂 Head 2 Head',
-  '👂 Free for all',
-  '🗣️ Solo',
-  '🗣️ Head 2 Head',
-  '🗣️ Free for all',
+const diceGames = [
+  '❤️',
+  '🌎',
+  '🧠',
+  '✏️',
+  '👂',
+  '🗣️',
 ];
+
+const diceChallenges = [
+  'Solo',
+  'Head 2 Head',
+  'Free For All',
+]
 
 function shuffle(a) {
   var j, x, i;
@@ -84,7 +78,8 @@ const globalState = {
   +--------+---+---+---+---+
   `,
   personal_boards: {},
-  dice_roll: null,
+  dice_game: '❤️',
+  dice_challenge: null,
   game_title: null,
   game_description: null,
   game_answer: null,
@@ -126,7 +121,7 @@ io.on('connection', (socket) => {
     sendState(socket);
   });
   socket.on('stop_timer', (data) => {
-    globalState.timer = null
+    globalState.timer = null;
   })
   socket.on('start_stopwatch', (data) => {
     globalState.stopwatch = 0;
@@ -147,8 +142,10 @@ io.on('connection', (socket) => {
   });
 
   socket.on('roll_dice', (data) => {
-    const randomPossibility = dicePossibilities[Math.floor(Math.random()*dicePossibilities.length)];
-    globalState.dice_roll = randomPossibility;
+    const rolledGame = diceGames[Math.floor(Math.random()*diceGames.length)];
+    const rolledChallenge = diceChallenges[Math.floor(Math.random()*diceChallenges.length)];
+    globalState.dice_game = rolledGame;
+    globalState.dice_challenge = rolledChallenge;
     globalState.game_title = null;
     globalState.game_description = null;
     globalState.game_answer = null;
