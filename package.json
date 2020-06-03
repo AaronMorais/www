@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "build": "webpack",
-    "start": "webpack && node server.js"
+    "local_webpack": "webpack --env.local",
+    "local_server": "PORT=8000 node server.js",
+    "prod": "webpack --env.production && PORT=80 node server.js"
   },
   "dependencies": {
     "@babel/preset-react": "^7.9.4",
