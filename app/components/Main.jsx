@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { SocketIOContext, SocketIOProvider } from 'use-socketio';
-import { Input, Button, Typography } from 'antd';
+import { Input, Button, Switch, Typography } from 'antd';
 import generateName from 'sillyname';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const { TextArea } = Input;
 
 function precisionRoundMod(number, precision) {
@@ -19,6 +19,7 @@ const App = function() {
   const [stopwatch, setStopwatch] = React.useState(null);
   const [globalBoard, setGlobalBoard] = React.useState('');
   const [personalBoards, setPersonalBoards] = React.useState(null);
+  const [myBoardPrivate, setMyBoardPrivate] = React.useState(false);
   const [myBoard, setMyBoard] = React.useState('Hi friends!');
   const [diceGame, setDiceGame] = React.useState(null);
   const [diceChallenge, setDiceChallenge] = React.useState(null);
@@ -102,8 +103,15 @@ const App = function() {
     socket.emit('global_board', e.target.value)
   }
   function onMyBoardChange(e) {
-    setMyBoard(e.target.value)
-    socket.emit('update_board', {name: name, data: e.target.value})
+    let newBoard = e.target.value
+    setMyBoard(newBoard)
+    newBoard = myBoardPrivate ? newBoard.replace(/[^\s]/g, '*') : newBoard;
+    socket.emit('update_board', {name: name, data: newBoard})
+  }
+  function onChangeMyBoardPrivate(enabled) {
+    setMyBoardPrivate(enabled);
+    const newBoard = enabled ? myBoard.replace(/[^\s]/g, '*') : myBoard;
+    socket.emit('update_board', {name: name, data: newBoard})
   }
   function onNameChange(e) {
     setName(e.target.value)
@@ -150,6 +158,7 @@ const App = function() {
         );
       })}
       <Title level={4}>Your Board</Title>
+      <Text>Incognito Mode: <Switch value={myBoardPrivate} onChange={onChangeMyBoardPrivate}/></Text>
       <TextArea value={myBoard} onChange={onMyBoardChange} autoSize style={{fontFamily: 'courier'}}/>
       <Title level={4}>Your Name</Title>
       <TextArea value={name} onChange={onNameChange} autoSize style={{fontFamily: 'courier'}}/>
