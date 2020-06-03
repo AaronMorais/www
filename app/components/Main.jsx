@@ -109,7 +109,6 @@ const App = function() {
     setName(e.target.value)
     socket.emit('update_board', {name: e.target.value, data: myBoard})
   }
-  
   return (
     <div style={{margin: 10}}>
       <Title>Words With fWiends</Title>
@@ -120,13 +119,13 @@ const App = function() {
       {!stopwatch && (<Button type="primary" onClick={onStartStopwatch}>Start Stopwatch</Button>)}
       {stopwatch && (<Button type="primary" onClick={onStopStopwatch}>Stop Stopwatch</Button>)}
       {stopwatch && (<Button type="primary" onClick={onHideStopwatch}>Clear Stopwatch</Button>)}
-      <div></div>
+      <br />
       {['🌎', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealA}>Draw 🌎</Button>)}
       {['🧠', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealB}>Draw 🧠</Button>)}
       {['✏️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealC}>Draw ✏️</Button>)}
       {['👂', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealD}>Draw 👂</Button>)}
       {['🗣️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealE}>Draw 🗣️</Button>)}
-      <div></div>
+      <br />
       {['🌎', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealAA}>Draw 🌎🌎</Button>)}
       {['🧠', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealBB}>Draw 🧠🧠</Button>)}
       {['✏️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealCC}>Draw ✏️✏️</Button>)}
@@ -142,12 +141,12 @@ const App = function() {
       <TextArea value={globalBoard} onChange={onGlobalBoardChange} autoSize style={{fontFamily: 'courier'}}/>
       <Title level={4}>Player Boards</Title>
       {personalBoards && Object.keys(personalBoards).map(function(key, i) {
-        if (key === socket.id) return <></>
+        if (key === socket.id) return <div key={i} />;
         return (
-          <>
-            <Title level={4} key={key+'title'}>{personalBoards[key].name}</Title>
-            <TextArea value={personalBoards[key].data} autoSize style={{fontFamily: 'courier'}} key={key+'text'}/>
-          </>
+          <div key={i}>
+            <Title level={4} key={i+'title'}>{personalBoards[key].name}</Title>
+            <TextArea value={personalBoards[key].data} autoSize style={{fontFamily: 'courier'}} key={i+'text'}/>
+          </div>
         );
       })}
       <Title level={4}>Your Board</Title>
@@ -159,7 +158,7 @@ const App = function() {
 }
 
 const Main = () => (
-  <SocketIOProvider url='http://localhost:8000'>
+  <SocketIOProvider url={window.location.href}>
     <App/>
   </SocketIOProvider>
 );

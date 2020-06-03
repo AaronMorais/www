@@ -89,6 +89,7 @@ let stopwatchInterval;
 function sendState(socket) {
   socket.emit('state', globalState);
   socket.broadcast.emit('state', globalState);
+  console.log(globalState);
 }
 
 io.on('connection', (socket) => {
