@@ -165,7 +165,7 @@ io.on('connection', (socket) => {
   });
   socket.on('reveal', (type) => {
     const card = deck[type + '_cards'].pop();
-    console.log(card);
+    
     switch (type) {
       case 'a':
         globalState.game_title = card.loanword + " (" + card.language + ")";

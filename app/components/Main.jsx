@@ -90,7 +90,6 @@ const App = function() {
     socket.emit('update_board', {name: e.target.value, data: myBoard})
   }
 
-  console.log(scoreBoard);
   return (
     <div style={{margin: 10}}>
       <Title>Words With fWiends</Title>
