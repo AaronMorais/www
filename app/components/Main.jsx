@@ -17,7 +17,7 @@ const App = function() {
   const [name, setName] = React.useState(generateName());
   const [timer, setTimer] = React.useState(null);
   const [stopwatch, setStopwatch] = React.useState(null);
-  const [globalBoard, setGlobalBoard] = React.useState('');
+  const [scoreBoard, setScoreBoard] = React.useState(null);
   const [personalBoards, setPersonalBoards] = React.useState(null);
   const [myBoardPrivate, setMyBoardPrivate] = React.useState(false);
   const [myBoard, setMyBoard] = React.useState('Hi friends!');
@@ -36,7 +36,7 @@ const App = function() {
     socket.on('state', (data) => {
       setTimer(data.timer);
       setStopwatch(data.stopwatch);
-      setGlobalBoard(data.global_board);
+      setScoreBoard(data.score_boards);
       setPersonalBoards(data.personal_boards);
       setDiceGame(data.dice_game);
       setDiceChallenge(data.dice_challenge);
@@ -45,7 +45,7 @@ const App = function() {
       setGameAnswer(data.game_answer);
       setGameShowAnswer(data.game_show_answer);
     });
-  }, [globalBoard, personalBoards, timer, stopwatch]);
+  }, [scoreBoard, personalBoards, timer, stopwatch]);
 
   function onRollDice(e) {
     socket.emit('roll_dice')
@@ -53,35 +53,8 @@ const App = function() {
   function onRevealAnswer(e) {
     socket.emit('reveal_answer')
   }
-  function onRevealA(e) {
-    socket.emit('reveal_a')
-  }
-  function onRevealB(e) {
-    socket.emit('reveal_b')
-  }
-  function onRevealC(e) {
-    socket.emit('reveal_c')
-  }
-  function onRevealD(e) {
-    socket.emit('reveal_d')
-  }
-  function onRevealE(e) {
-    socket.emit('reveal_e')
-  }
-  function onRevealAA(e) {
-    socket.emit('reveal_aa')
-  }
-  function onRevealBB(e) {
-    socket.emit('reveal_bb')
-  }
-  function onRevealCC(e) {
-    socket.emit('reveal_cc')
-  }
-  function onRevealDD(e) {
-    socket.emit('reveal_dd')
-  }
-  function onRevealEE(e) {
-    socket.emit('reveal_ee')
+  function reveal(type) {
+    socket.emit('reveal', type)
   }
   function onTimerClick(e) {
     socket.emit('start_timer')
@@ -98,9 +71,8 @@ const App = function() {
   function onHideStopwatch(e) {
     socket.emit('hide_stopwatch')
   }
-  function onGlobalBoardChange(e) {
-    setGlobalBoard(e.target.value)
-    socket.emit('global_board', e.target.value)
+  function incrementScore(type) {
+    socket.emit('increment_score', type)
   }
   function onMyBoardChange(e) {
     let newBoard = e.target.value
@@ -117,6 +89,7 @@ const App = function() {
     setName(e.target.value)
     socket.emit('update_board', {name: e.target.value, data: myBoard})
   }
+
   return (
     <div style={{margin: 10}}>
       <Title>Words With fWiends</Title>
@@ -128,25 +101,44 @@ const App = function() {
       {stopwatch && (<Button type="primary" onClick={onStopStopwatch}>Stop Stopwatch</Button>)}
       {stopwatch && (<Button type="primary" onClick={onHideStopwatch}>Clear Stopwatch</Button>)}
       <br />
-      {['🌎', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealA}>Draw 🌎</Button>)}
-      {['🧠', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealB}>Draw 🧠</Button>)}
-      {['✏️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealC}>Draw ✏️</Button>)}
-      {['👂', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealD}>Draw 👂</Button>)}
-      {['🗣️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealE}>Draw 🗣️</Button>)}
+      {['🌎', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('a')}>Draw 🌎</Button>)}
+      {['🧠', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('b')}>Draw 🧠</Button>)}
+      {['✏️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('c')}>Draw ✏️</Button>)}
+      {['👂', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('d')}>Draw 👂</Button>)}
+      {['🗣️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('e')}>Draw 🗣️</Button>)}
       <br />
-      {['🌎', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealAA}>Draw 🌎🌎</Button>)}
-      {['🧠', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealBB}>Draw 🧠🧠</Button>)}
-      {['✏️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealCC}>Draw ✏️✏️</Button>)}
-      {['👂', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealDD}>Draw 👂👂</Button>)}
-      {['🗣️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={onRevealEE}>Draw 🗣️🗣️</Button>)}
+      {['🌎', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('aa')}>Draw 🌎🌎</Button>)}
+      {['🧠', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('bb')}>Draw 🧠🧠</Button>)}
+      {['✏️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('cc')}>Draw ✏️✏️</Button>)}
+      {['👂', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('dd')}>Draw 👂👂</Button>)}
+      {['🗣️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('ee')}>Draw 🗣️🗣️</Button>)}
       {gameTitle && (<Title level={3}>{gameTitle}</Title>)}
       {gameDescription && (<Title level={3} style={{whiteSpace: "pre", fontFamily: 'courier'}}>{gameDescription}</Title>)}
       {timer && (<Title level={4}>Timer: {timer}</Title>)}
       {stopwatch != null && (<Title level={4}>Stopwatch: {precisionRoundMod(stopwatch, 1)}</Title>)}
       {gameAnswer && (<Button type="primary" onClick={onRevealAnswer}>Reveal Answer</Button>)}
       {gameAnswer && gameShowAnswer && (<Title level={3}>{gameAnswer}</Title>)}
-      <Title level={4}>Leaderboard</Title>
-      <TextArea value={globalBoard} onChange={onGlobalBoardChange} autoSize style={{fontFamily: 'courier'}}/>
+      <Title level={4}>Score Board</Title>
+      {scoreBoard && Object.keys(scoreBoard).map(function(key, i) {
+        if (!personalBoards || !(key in personalBoards)) return <div key={i} />;
+        let text = personalBoards[key].name + ' ';
+        text += ' 🌎 ' + scoreBoard[key]['A']
+        text += ' 🧠 ' + scoreBoard[key]['B']
+        text += ' ✏ ' + scoreBoard[key]['C']
+        text += ' 👂 ' + scoreBoard[key]['D']
+        text += ' 🗣 ' + scoreBoard[key]['E']
+        return (
+          <div key={i}>
+            <Text key={i+'text'}>{text}</Text>
+          </div>
+        );
+      })}
+      <br />
+      {<Button type="primary" onClick={()=>incrementScore('A')}>Add 🌎</Button>}
+      {<Button type="primary" onClick={()=>incrementScore('B')}>Add 🧠</Button>}
+      {<Button type="primary" onClick={()=>incrementScore('C')}>Add ✏</Button>}
+      {<Button type="primary" onClick={()=>incrementScore('D')}>Add 👂</Button>}
+      {<Button type="primary" onClick={()=>incrementScore('E')}>Add 🗣</Button>}
       <Title level={4}>Player Boards</Title>
       {personalBoards && Object.keys(personalBoards).map(function(key, i) {
         if (key === socket.id) return <div key={i} />;
@@ -158,7 +150,7 @@ const App = function() {
         );
       })}
       <Title level={4}>Your Board</Title>
-      <Text>Incognito Mode: <Switch value={myBoardPrivate} onChange={onChangeMyBoardPrivate}/></Text>
+      <Text>Incognito Mode: <Switch checked={myBoardPrivate} onChange={onChangeMyBoardPrivate}/></Text>
       <TextArea value={myBoard} onChange={onMyBoardChange} autoSize style={{fontFamily: 'courier'}}/>
       <Title level={4}>Your Name</Title>
       <TextArea value={name} onChange={onNameChange} autoSize style={{fontFamily: 'courier'}}/>
