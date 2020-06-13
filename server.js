@@ -68,15 +68,7 @@ const deck = {
 const globalState = {
   timer: null,
   stopwatch: null,
-  global_board: `
-  +--------+---+---+---+---+
-  |        | A | B | C | D |
-  +--------+---+---+---+---+
-  | Aaron  |   |   |   |   |
-  +--------+---+---+---+---+
-  | Adrian |   |   |   |   |
-  +--------+---+---+---+---+
-  `,
+  score_boards: {},
   personal_boards: {},
   dice_game: '❤️',
   dice_challenge: null,
@@ -94,19 +86,33 @@ function sendState(socket) {
 
 io.on('connection', (socket) => {
   console.log('new connection', socket.id)
+  globalState.score_boards[socket.id] = {
+    'A': 0,
+    'B': 0,
+    'C': 0,
+    'D': 0,
+    'E': 0,
+  }
   sendState(socket);
 
   socket.on('disconnect', (data) => {
     delete globalState.personal_boards[socket.id];
+    delete globalState.score_boards[socket.id];
     sendState(socket);
   });
   socket.on('update_board', (data) => {
     globalState.personal_boards[socket.id] = data;
     sendState(socket);
   });
+  socket.on('increment_score', (score_type) => {
+    let score = globalState.score_boards[socket.id][score_type];
+    if (score === undefined) {
+      score = 1;
+    } else {
+      score += 1;
+    }
+    globalState.score_boards[socket.id][score_type] = score;
 
-  socket.on('global_board', (data) => {
-    globalState.global_board = data;
     sendState(socket);
   });
   socket.on('start_timer', (data) => {
@@ -157,84 +163,62 @@ io.on('connection', (socket) => {
     globalState.game_show_answer = true;
     sendState(socket);
   });
-  socket.on('reveal_a', (data) => {
-    const card = deck.a_cards.pop();
-    globalState.game_title = card.loanword + " (" + card.language + ")";
-    globalState.game_description = "What is the native meaning?";
-    globalState.game_answer = card.answer;
-    globalState.game_show_answer = false;
-    sendState(socket);
-  });
-  socket.on('reveal_b', (data) => {
-    const card = deck.b_cards.pop();
-    globalState.game_title = card.question;
-    globalState.game_description = "A) " + card.a + " B) " + card.b;
-    if (card.c != "") {globalState.game_description += " C) " + card.c;}
-    globalState.game_answer = card.answer + " | " + card.explanation;
-    globalState.game_show_answer = false;
-    sendState(socket);
-  });
-  socket.on('reveal_c', (data) => {
-    const card = deck.c_cards.pop();
-    globalState.game_title = "NAGARAM";
-    globalState.game_description = card.board;
-    globalState.game_answer = null;
-    globalState.game_show_answer = false;
-    sendState(socket);
-  });
-  socket.on('reveal_d', (data) => {
-    const card = deck.d_cards.pop();
-    globalState.game_title = "Give a rhyme for '" + card.rhyme + "'";
-    globalState.game_description = "Minimum 5 rhyming words for Solo play.";
-    globalState.game_answer = null;
-    globalState.game_show_answer = false;
-    sendState(socket);
-  });
-  socket.on('reveal_e', (data) => {
-    const card = deck.e_cards.pop();
-    globalState.game_title = card.twister;
-    globalState.game_description = "One attempt. No slip ups.";
-    globalState.game_answer = null;
-    globalState.game_show_answer = false;
-    sendState(socket);
-  });
-  socket.on('reveal_aa', (data) => {
-    const card = deck.aa_cards.pop();
-    globalState.game_title =  card.translation;
-    globalState.game_description = "From " + card.language + ": " + card.native + ".\nWhat is the meaning?";
-    globalState.game_answer = card.answer;
-    globalState.game_show_answer = false;
-    sendState(socket);
-  });
-  socket.on('reveal_bb', (data) => {
-    const card = deck.bb_cards.pop();
-    globalState.game_title = card.question;
-    globalState.game_description = null;
-    globalState.game_answer = card.answer;
-    globalState.game_show_answer = false;
-    sendState(socket);
-  });
-  socket.on('reveal_cc', (data) => {
-    const card = deck.cc_cards.pop();
-    globalState.game_title = card.wordtype + ": " + card.definition;
-    globalState.game_description = card.challenge + "\ne.g. " + card.example;
-    globalState.game_answer = null;
-    globalState.game_show_answer = false;
-    sendState(socket);
-  });
-  socket.on('reveal_dd', (data) => {
-    const card = deck.dd_cards.pop();
-    globalState.game_title = card.native;
-    globalState.game_description = "From " + card.language + ".\nWhat's that sound?";
-    globalState.game_answer = card.answer;
-    globalState.game_show_answer = false;
-    sendState(socket);
-  });
-  socket.on('reveal_ee', (data) => {
-    const card = deck.ee_cards.pop();
-    globalState.game_title = card.phrase;
-    globalState.game_description = "What's the phrase?";
-    globalState.game_answer = card.answer;
+  socket.on('reveal', (type) => {
+    const card = deck[type + '_cards'].pop();
+    console.log(card);
+    switch (type) {
+      case 'a':
+        globalState.game_title = card.loanword + " (" + card.language + ")";
+        globalState.game_description = "What is the native meaning?";
+        globalState.game_answer = card.answer;
+        break;
+      case 'aa':
+        globalState.game_title =  card.translation;
+        globalState.game_description = "From " + card.language + ": " + card.native + ".\nWhat is the meaning?";
+        globalState.game_answer = card.answer;
+        break;
+      case 'b':
+        globalState.game_title = card.question;
+        globalState.game_description = "A) " + card.a + " B) " + card.b;
+        if (card.c != "") {globalState.game_description += " C) " + card.c;}
+        globalState.game_answer = card.answer + " | " + card.explanation;
+        break;
+      case 'bb':
+        globalState.game_title = card.question;
+        globalState.game_description = null;
+        globalState.game_answer = card.answer;
+        break;
+      case 'c':
+        globalState.game_title = "NAGARAM";
+        globalState.game_description = card.board;
+        globalState.game_answer = null;
+        break;
+      case 'cc':
+        globalState.game_title = card.wordtype + ": " + card.definition;
+        globalState.game_description = card.challenge + "\ne.g. " + card.example;
+        globalState.game_answer = null;
+        break;
+      case 'd':
+        globalState.game_title = "Give a rhyme for '" + card.rhyme + "'";
+        globalState.game_description = "Minimum 5 rhyming words for Solo play.";
+        globalState.game_answer = null;
+        break;
+      case 'dd':
+        globalState.game_title = card.native;
+        globalState.game_description = "From " + card.language + ".\nWhat's that sound?";
+        globalState.game_answer = card.answer;
+        break;
+      case 'e':
+        globalState.game_title = card.twister;
+        globalState.game_description = "One attempt. No slip ups.";
+        globalState.game_answer = null;
+        break;
+      case 'ee':
+        globalState.game_title = card.phrase;
+        globalState.game_description = "What's the phrase?";
+        globalState.game_answer = card.answer;
+        break;
+    }
     globalState.game_show_answer = false;
     sendState(socket);
   });
