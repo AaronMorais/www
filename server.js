@@ -105,14 +105,7 @@ io.on('connection', (socket) => {
     sendState(socket);
   });
   socket.on('increment_score', (score_type) => {
-    let score = globalState.score_boards[socket.id][score_type];
-    if (score === undefined) {
-      score = 1;
-    } else {
-      score += 1;
-    }
-    globalState.score_boards[socket.id][score_type] = score;
-
+    globalState.score_boards[socket.id][score_type] += 1;
     sendState(socket);
   });
   socket.on('start_timer', (data) => {
@@ -165,7 +158,7 @@ io.on('connection', (socket) => {
   });
   socket.on('reveal', (type) => {
     const card = deck[type + '_cards'].pop();
-    
+
     switch (type) {
       case 'a':
         globalState.game_title = card.loanword + " (" + card.language + ")";
