@@ -86,13 +86,7 @@ function sendState(socket) {
 
 io.on('connection', (socket) => {
   console.log('new connection', socket.id)
-  globalState.score_boards[socket.id] = {
-    'A': 0,
-    'B': 0,
-    'C': 0,
-    'D': 0,
-    'E': 0,
-  }
+  globalState.score_boards[socket.id] = 0
   sendState(socket);
 
   socket.on('disconnect', (data) => {
@@ -104,8 +98,14 @@ io.on('connection', (socket) => {
     globalState.personal_boards[socket.id] = data;
     sendState(socket);
   });
-  socket.on('increment_score', (score_type) => {
-    globalState.score_boards[socket.id][score_type] += 1;
+  socket.on('increment_score', (score) => {
+    globalState.score_boards[socket.id] += score;
+    if (globalState.score_boards[socket.id] < 0) {
+      globalState.score_boards[socket.id] = 0
+    }
+    if (globalState.score_boards[socket.id] > 12) {
+      globalState.score_boards[socket.id] = 12
+    }
     sendState(socket);
   });
   socket.on('start_timer', (data) => {
@@ -187,8 +187,8 @@ io.on('connection', (socket) => {
         globalState.game_answer = null;
         break;
       case 'cc':
-        globalState.game_title = card.wordtype + ": " + card.definition;
-        globalState.game_description = card.challenge + "\ne.g. " + card.example;
+        globalState.game_title = card.wordtype + ": " + card.definition + "\ne.g. " + card.example;
+        globalState.game_description = card.challenge + "\n" + card.solo;
         globalState.game_answer = null;
         break;
       case 'd':
