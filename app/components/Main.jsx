@@ -112,8 +112,8 @@ const App = function() {
       {['✏️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('cc')}>Draw ✏️✏️</Button>)}
       {['👂', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('dd')}>Draw 👂👂</Button>)}
       {['🗣️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('ee')}>Draw 🗣️🗣️</Button>)}
-      {gameTitle && (<Title level={3}>{gameTitle}</Title>)}
-      {gameDescription && (<Title level={3} style={{whiteSpace: "pre", fontFamily: 'courier'}}>{gameDescription}</Title>)}
+      {gameTitle && (<Title level={3} style={{whiteSpace: "pre-wrap",overflow:'wrap'}}>{gameTitle}</Title>)}
+      {gameDescription && (<Title level={3} style={{whiteSpace: "pre-wrap", fontFamily: 'courier'}}>{gameDescription}</Title>)}
       {timer && (<Title level={4}>Timer: {timer}</Title>)}
       {stopwatch != null && (<Title level={4}>Stopwatch: {precisionRoundMod(stopwatch, 1)}</Title>)}
       {gameAnswer && (<Button type="primary" onClick={onRevealAnswer}>Reveal Answer</Button>)}
@@ -121,24 +121,45 @@ const App = function() {
       <Title level={4}>Score Board</Title>
       {scoreBoard && Object.keys(scoreBoard).map(function(key, i) {
         if (!personalBoards || !(key in personalBoards)) return <div key={i} />;
-        let text = personalBoards[key].name + ' ';
-        text += ' 🌎 ' + scoreBoard[key]['A']
-        text += ' 🧠 ' + scoreBoard[key]['B']
-        text += ' ✏ ' + scoreBoard[key]['C']
-        text += ' 👂 ' + scoreBoard[key]['D']
-        text += ' 🗣 ' + scoreBoard[key]['E']
+        let text = personalBoards[key].name + ': |';
+        if (scoreBoard[key] >= 12) {
+          text += "WINNER|"
+        } else {
+          function addCell(level) {
+            var cell;
+            if (level == scoreBoard[key]) {
+              cell = "X";
+            } else {
+              cell = "₁₂₃₄₅₆₇¹²³⁴⁵"[level]
+            }
+            if (level < 6) {
+              cell += "|"
+            } else {
+              cell += "["
+            }
+            return cell
+          }
+          var j
+          for (j = 0; j < 12; j++) {
+            text += (addCell(j))
+          }
+          text += "FINISH]"
+        }
         return (
           <div key={i}>
-            <Text key={i+'text'}>{text}</Text>
+            <Text key={i+'text'} style={{fontFamily: 'courier'}}>{text}</Text>
           </div>
         );
       })}
       <br />
-      {<Button type="primary" onClick={()=>incrementScore('A')}>Add 🌎</Button>}
-      {<Button type="primary" onClick={()=>incrementScore('B')}>Add 🧠</Button>}
-      {<Button type="primary" onClick={()=>incrementScore('C')}>Add ✏</Button>}
-      {<Button type="primary" onClick={()=>incrementScore('D')}>Add 👂</Button>}
-      {<Button type="primary" onClick={()=>incrementScore('E')}>Add 🗣</Button>}
+      {<Button type="primary" onClick={()=>incrementScore(1)}>+ 1</Button>}
+      {<Button type="primary" onClick={()=>incrementScore(-1)}>- 1</Button>}
+      <Title level={4}>Your Name</Title>
+      <TextArea value={name} onChange={onNameChange} autoSize style={{fontFamily: 'courier'}}/>
+      <Title level={4}>Your Board</Title>
+      {timer && (<Title level={4}>Timer: {timer}</Title>)}
+      <Text>Incognito Mode: <Switch checked={myBoardPrivate} onChange={onChangeMyBoardPrivate}/></Text>
+      <TextArea value={myBoard} onChange={onMyBoardChange} autoSize style={{fontFamily: 'courier'}}/>
       <Title level={4}>Player Boards</Title>
       {personalBoards && Object.keys(personalBoards).map(function(key, i) {
         if (key === socket.id) return <div key={i} />;
@@ -149,11 +170,6 @@ const App = function() {
           </div>
         );
       })}
-      <Title level={4}>Your Board</Title>
-      <Text>Incognito Mode: <Switch checked={myBoardPrivate} onChange={onChangeMyBoardPrivate}/></Text>
-      <TextArea value={myBoard} onChange={onMyBoardChange} autoSize style={{fontFamily: 'courier'}}/>
-      <Title level={4}>Your Name</Title>
-      <TextArea value={name} onChange={onNameChange} autoSize style={{fontFamily: 'courier'}}/>
     </div>
   );
 }
