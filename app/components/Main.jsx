@@ -12,6 +12,35 @@ function precisionRoundMod(number, precision) {
   return Math.round( n * factor) / factor;
 }
 
+function generateTower(score) {
+  let rawTower = "₁₂₃₄¹²³⁴";
+  let tower = "|"
+  if (score >= rawTower.length) {
+    tower += "WINNER|"
+  } else {
+    function addCell(level) {
+      var cell;
+      if (level == score) {
+        cell = "X";
+      } else {
+        cell = rawTower[level]
+      }
+      if (level < 3) {
+        cell += "|"
+      } else {
+        cell += "["
+      }
+      return cell
+    }
+    var j
+    for (j = 0; j < rawTower.length; j++) {
+      tower += (addCell(j))
+    }
+    tower += "FINISH]"
+  }
+  return tower
+}
+
 const App = function() {
   const socket = React.useContext(SocketIOContext);
   const [name, setName] = React.useState(generateName());
@@ -50,41 +79,52 @@ const App = function() {
   function onRollDice(e) {
     socket.emit('roll_dice')
   }
+
   function onRevealAnswer(e) {
     socket.emit('reveal_answer')
   }
+
   function reveal(type) {
     socket.emit('reveal', type)
   }
+
   function onTimerClick(e) {
     socket.emit('start_timer')
   }
+
   function onTimerStop(e) {
     socket.emit('stop_timer')
   }
+
   function onStartStopwatch(e) {
     socket.emit('start_stopwatch')
   }
+
   function onStopStopwatch(e) {
     socket.emit('stop_stopwatch')
   }
+
   function onHideStopwatch(e) {
     socket.emit('hide_stopwatch')
   }
+
   function incrementScore(type) {
     socket.emit('increment_score', type)
   }
+
   function onMyBoardChange(e) {
     let newBoard = e.target.value
     setMyBoard(newBoard)
     newBoard = myBoardPrivate ? newBoard.replace(/[^\s]/g, '*') : newBoard;
     socket.emit('update_board', {name: name, data: newBoard})
   }
+
   function onChangeMyBoardPrivate(enabled) {
     setMyBoardPrivate(enabled);
     const newBoard = enabled ? myBoard.replace(/[^\s]/g, '*') : myBoard;
     socket.emit('update_board', {name: name, data: newBoard})
   }
+
   function onNameChange(e) {
     setName(e.target.value)
     socket.emit('update_board', {name: e.target.value, data: myBoard})
@@ -92,7 +132,7 @@ const App = function() {
 
   return (
     <div style={{margin: 10}}>
-      <Title>Words With fWiends</Title>
+      <Title>Tower of Babble</Title>
       {diceGame && diceChallenge && (<Title level={3}>{diceGame} {diceChallenge}</Title>)}
       <Button type="primary" onClick={onRollDice}>Roll Dice</Button>
       {!timer && (<Button type="primary" onClick={onTimerClick}>Start Timer</Button>)}
@@ -121,30 +161,8 @@ const App = function() {
       <Title level={4}>Score Board</Title>
       {scoreBoard && Object.keys(scoreBoard).map(function(key, i) {
         if (!personalBoards || !(key in personalBoards)) return <div key={i} />;
-        let text = personalBoards[key].name + ': |';
-        if (scoreBoard[key] >= 12) {
-          text += "WINNER|"
-        } else {
-          function addCell(level) {
-            var cell;
-            if (level == scoreBoard[key]) {
-              cell = "X";
-            } else {
-              cell = "₁₂₃₄₅₆₇¹²³⁴⁵"[level]
-            }
-            if (level < 6) {
-              cell += "|"
-            } else {
-              cell += "["
-            }
-            return cell
-          }
-          var j
-          for (j = 0; j < 12; j++) {
-            text += (addCell(j))
-          }
-          text += "FINISH]"
-        }
+        let text = personalBoards[key].name + ': ';
+        text += generateTower(scoreBoard[key]);
         return (
           <div key={i}>
             <Text key={i+'text'} style={{fontFamily: 'courier'}}>{text}</Text>
@@ -152,8 +170,8 @@ const App = function() {
         );
       })}
       <br />
-      {<Button type="primary" onClick={()=>incrementScore(1)}>+ 1</Button>}
       {<Button type="primary" onClick={()=>incrementScore(-1)}>- 1</Button>}
+      {<Button type="primary" onClick={()=>incrementScore(1)}>+ 1</Button>}
       <Title level={4}>Your Name</Title>
       <TextArea value={name} onChange={onNameChange} autoSize style={{fontFamily: 'courier'}}/>
       <Title level={4}>Your Board</Title>

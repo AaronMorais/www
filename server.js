@@ -45,7 +45,6 @@ function shuffle(a) {
   return a;
 }
 
-
 function shuffle_deck(filepath) {
   const parse = require('csv-parse/lib/sync');
   const fs = require('fs');
@@ -94,20 +93,24 @@ io.on('connection', (socket) => {
     delete globalState.score_boards[socket.id];
     sendState(socket);
   });
+
   socket.on('update_board', (data) => {
     globalState.personal_boards[socket.id] = data;
     sendState(socket);
   });
+
   socket.on('increment_score', (score) => {
     globalState.score_boards[socket.id] += score;
     if (globalState.score_boards[socket.id] < 0) {
       globalState.score_boards[socket.id] = 0
     }
-    if (globalState.score_boards[socket.id] > 12) {
-      globalState.score_boards[socket.id] = 12
+
+    if (globalState.score_boards[socket.id] > 8) {
+      globalState.score_boards[socket.id] = 8
     }
     sendState(socket);
   });
+
   socket.on('start_timer', (data) => {
     globalState.timer = 30;
     var timerInterval = setInterval(function(){
@@ -120,9 +123,11 @@ io.on('connection', (socket) => {
     }, 1000);
     sendState(socket);
   });
+
   socket.on('stop_timer', (data) => {
     globalState.timer = null;
   })
+
   socket.on('start_stopwatch', (data) => {
     globalState.stopwatch = 0;
     stopwatchInterval = setInterval(function(){
@@ -131,10 +136,12 @@ io.on('connection', (socket) => {
     }, 100);
     sendState(socket);
   });
+
   socket.on('stop_stopwatch', (data) => {
     clearInterval(stopwatchInterval);
     sendState(socket);
   });
+
   socket.on('hide_stopwatch', (data) => {
     globalState.stopwatch = null;
     clearInterval(stopwatchInterval);
@@ -152,10 +159,12 @@ io.on('connection', (socket) => {
     globalState.game_show_answer = false;
     sendState(socket);
   });
+
   socket.on('reveal_answer', (data) => {
     globalState.game_show_answer = true;
     sendState(socket);
   });
+
   socket.on('reveal', (type) => {
     const card = deck[type + '_cards'].pop();
 
