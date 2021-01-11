@@ -74,7 +74,9 @@ const globalState = {
   game_title: null,
   game_description: null,
   game_answer: null,
+  buzzer_board: [],
 }
+
 let stopwatchInterval;
 
 function sendState(socket) {
@@ -157,11 +159,19 @@ io.on('connection', (socket) => {
     globalState.game_description = null;
     globalState.game_answer = null;
     globalState.game_show_answer = false;
+    globalState.buzzer_board = []
     sendState(socket);
   });
 
   socket.on('reveal_answer', (data) => {
     globalState.game_show_answer = true;
+    sendState(socket);
+  });
+
+  socket.on('buzz_in', (name) => {
+    if (!globalState.buzzer_board.includes(name)) {
+      globalState.buzzer_board.push(name)
+    }
     sendState(socket);
   });
 
@@ -222,6 +232,7 @@ io.on('connection', (socket) => {
         break;
     }
     globalState.game_show_answer = false;
+    globalState.buzzer_board = []
     sendState(socket);
   });
 });

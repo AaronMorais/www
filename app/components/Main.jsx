@@ -56,6 +56,7 @@ const App = function() {
   const [gameDescription, setGameDescription] = React.useState(null);
   const [gameAnswer, setGameAnswer] = React.useState(null);
   const [gameShowAnswer, setGameShowAnswer] = React.useState(null);
+  const [buzzerBoard, setBuzzerBoard] = React.useState(null);
 
   useEffect(() => {
     if (!personalBoards) {
@@ -73,6 +74,7 @@ const App = function() {
       setGameDescription(data.game_description);
       setGameAnswer(data.game_answer);
       setGameShowAnswer(data.game_show_answer);
+      setBuzzerBoard(data.buzzer_board);
     });
   }, [scoreBoard, personalBoards, timer, stopwatch]);
 
@@ -112,6 +114,10 @@ const App = function() {
     socket.emit('increment_score', type)
   }
 
+  function buzzIn(name) {
+    socket.emit('buzz_in', name)
+  }
+
   function onMyBoardChange(e) {
     let newBoard = e.target.value
     setMyBoard(newBoard)
@@ -133,6 +139,7 @@ const App = function() {
   return (
     <div style={{margin: 10}}>
       <Title>Tower of Babble</Title>
+
       {diceGame && diceChallenge && (<Title level={3}>{diceGame} {diceChallenge}</Title>)}
       <Button type="primary" onClick={onRollDice}>Roll Dice</Button>
       {!timer && (<Button type="primary" onClick={onTimerClick}>Start Timer</Button>)}
@@ -141,6 +148,7 @@ const App = function() {
       {stopwatch && (<Button type="primary" onClick={onStopStopwatch}>Stop Stopwatch</Button>)}
       {stopwatch && (<Button type="primary" onClick={onHideStopwatch}>Clear Stopwatch</Button>)}
       <br />
+
       {['🌎', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('a')}>Draw 🌎</Button>)}
       {['🧠', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('b')}>Draw 🧠</Button>)}
       {['✏️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('c')}>Draw ✏️</Button>)}
@@ -154,10 +162,22 @@ const App = function() {
       {['🗣️', '❤️'].includes(diceGame) && (<Button type="primary" onClick={() => reveal('ee')}>Draw 🗣️🗣️</Button>)}
       {gameTitle && (<Title level={3} style={{whiteSpace: "pre-wrap",overflow:'wrap'}}>{gameTitle}</Title>)}
       {gameDescription && (<Title level={3} style={{whiteSpace: "pre-wrap", fontFamily: 'courier'}}>{gameDescription}</Title>)}
+
       {timer && (<Title level={4}>Timer: {timer}</Title>)}
       {stopwatch != null && (<Title level={4}>Stopwatch: {precisionRoundMod(stopwatch, 1)}</Title>)}
+
+      {buzzerBoard && (buzzerBoard.length > 0) && (<Text><b>Buzzed in </b>✋</Text>)}
+      {buzzerBoard && buzzerBoard.map(function(player) {
+        return (
+          <div>
+            <Text>{player}</Text>
+          </div>
+        );
+      })}
+
       {gameAnswer && (<Button type="primary" onClick={onRevealAnswer}>Reveal Answer</Button>)}
       {gameAnswer && gameShowAnswer && (<Title level={3}>{gameAnswer}</Title>)}
+
       <Title level={4}>Score Board</Title>
       {scoreBoard && Object.keys(scoreBoard).map(function(key, i) {
         if (!personalBoards || !(key in personalBoards)) return <div key={i} />;
@@ -170,14 +190,19 @@ const App = function() {
         );
       })}
       <br />
+
       {<Button type="primary" onClick={()=>incrementScore(-1)}>- 1</Button>}
       {<Button type="primary" onClick={()=>incrementScore(1)}>+ 1</Button>}
+      {gameAnswer && <Button type="primary" onClick={()=>buzzIn(name)}>Buzz in</Button>}
+
       <Title level={4}>Your Name</Title>
       <TextArea value={name} onChange={onNameChange} autoSize style={{fontFamily: 'courier'}}/>
+
       <Title level={4}>Your Board</Title>
       {timer && (<Title level={4}>Timer: {timer}</Title>)}
       <Text>Incognito Mode: <Switch checked={myBoardPrivate} onChange={onChangeMyBoardPrivate}/></Text>
       <TextArea value={myBoard} onChange={onMyBoardChange} autoSize style={{fontFamily: 'courier'}}/>
+
       <Title level={4}>Player Boards</Title>
       {personalBoards && Object.keys(personalBoards).map(function(key, i) {
         if (key === socket.id) return <div key={i} />;
