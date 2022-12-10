@@ -14,7 +14,7 @@
     "antd": "^4.2.4",
     "css-loader": "^3.5.3",
     "csv-parse": "^4.10.1",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "sillyname": "^0.1.0",
